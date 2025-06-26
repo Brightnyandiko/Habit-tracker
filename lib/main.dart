@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 
 void main() async {
-  WidgetsBindingObserver.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   // Initialize database
   await HabitDatabase.initialize();
   await HabitDatabase().saveFirstLaunchDate();

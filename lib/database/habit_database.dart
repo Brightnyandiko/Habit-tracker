@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:habit_tracker/models/habit.dart';
+import 'package:habit_tracker/models/app_settings.dart';
 
 class HabitDatabase extends ChangeNotifier {
   static late Isar isar;
@@ -32,7 +33,7 @@ class HabitDatabase extends ChangeNotifier {
 
   //Get first date of app startup (for heatmap)
   Future<DateTime?> getFirstLaunchDate() async {
-    final settings = await isar.appSettings.where().findFirst():
+    final settings = await isar.appSettings.where().findFirst();
     return settings?.firstLaunchDate;
   }
 
@@ -77,7 +78,7 @@ class HabitDatabase extends ChangeNotifier {
 
     //update completion status
     if (habit != null) {
-      await isar.writeTxn() async{
+      await isar.writeTxn(() async{
         // if habit is completed -> add the current date to the completedDays list
         if (isCompleted && !habit.completedDays.contains(DateTime.now())) {
           // today
@@ -96,9 +97,9 @@ class HabitDatabase extends ChangeNotifier {
         //if habit is NOT completed -> remove the current date from the list
         else {
           //remove the current date if the habit is marked as not completed
-          habit.completedDays.removeWhare(
-                  (date) =>
-                  date.year == DateTime.now().year() &&
+          habit.completedDays.removeWhere(
+                (date) =>
+                  date.year == DateTime.now().year &&
                   date.month == DateTime.now().month &&
                   date.day == DateTime.now().day,
           );
@@ -113,7 +114,7 @@ class HabitDatabase extends ChangeNotifier {
   }
 
   //U P D A T E  - Edit habit name
-  Future<void> UpdateHabitName(int id, String newName) async {
+  Future<void> updateHabitName(int id, String newName) async {
     // find the specific habit
     final habit = await isar.habits.get(id);
 
