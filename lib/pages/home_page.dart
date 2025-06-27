@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/my_drawer.dart';
+import 'package:habit_tracker/components/my_habit_tile.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:provider/provider.dart';
 
 import '../models/habit.dart';
+import '../util/habit_util.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -67,6 +69,16 @@ class _HomePageState extends State<HomePage> {
         )
     );
   }
+
+
+  // check habit on and off
+  void checkHabitOnOff(bool? value, Habit habit) {
+    //update habit completion status
+    if (value != null) {
+      context.read<HabitDatabase>().updateHabitCompletion(habit.id, value);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +111,15 @@ class _HomePageState extends State<HomePage> {
           final habit = currentHabits[index];
 
           //check if the habit is completed today
-          bool isCompletedToday = isHabitCompletedToday();
+          bool isCompletedToday = isHabitCompletedToday(habit.completedDays);
+
+          //return habit tile UI
+          return MyHabitTile(
+              isCompleted:
+              isCompletedToday,
+              text: habit.name,
+              onChanged: (value) => checkHabitOnOff(value, habit),
+          );
         }
     );
   }
